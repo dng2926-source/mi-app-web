@@ -100,10 +100,26 @@ app.use(
 // Compresión de respuestas
 app.use(compression());
 
-// CORS configurado
+// CORS configurado - permitir Firebase Hosting y localhost
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:4000",
+    origin: (origin, callback) => {
+      // Permitir peticiones desde Firebase Hosting, localhost y cualquier origen en desarrollo
+      const allowedOrigins = [
+        "https://mi-app-web-221fa.web.app",
+        "http://localhost:4000",
+        "http://localhost:3000",
+      ];
+      
+      // En desarrollo, permitir todos los orígenes
+      if (process.env.NODE_ENV === "development") {
+        callback(null, true);
+      } else if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
     credentials: true,
   }),
 );
