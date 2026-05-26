@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "mi-app-web-221fa",
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Clone</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css"
+    />
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-client.js"></script>
+  </head>
+  <body>
+    <!-- Header/Navbar -->
+    <header class="navbar">
+      <div class="nav-content">
+        <div class="logo"><i class="fab fa-instagram"></i> Instagram</div>
+        <div class="nav-icons">
+          <button
+            id="notificationsButton"
+            class="nav-btn"
+            title="Notificaciones"
+          >
+            <i class="fas fa-bell"></i>
+            <span
+              id="notificationBadge"
+              class="notification-badge"
+              style="display: none"
+            ></span>
+          </button>
+          <div class="user-badge" data-user-name="">User</div>
+          <button id="logoutButton" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Cerrar SesiÃ³n
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+      <!-- Sidebar (Desktop) -->
+      <aside class="sidebar desktop-only">
+        <nav class="sidebar-nav">
+          <div class="nav-item active" data-section="feed">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+          </div>
+          <div class="nav-item" data-section="explore">
+            <i class="fas fa-compass"></i>
+            <span>Explorar</span>
+          </div>
+          <div class="nav-item" data-section="profile">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+          </div>
+          <div class="nav-item" data-section="messages">
+            <i class="fas fa-envelope"></i>
+            <span>Mensajes</span>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Bottom Bar (Mobile) -->
+      <nav class="bottom-bar mobile-only">
+        <div class="nav-item active" data-section="feed">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="nav-item" data-section="explore">
+          <i class="fas fa-compass"></i>
+        </div>
+        <div class="nav-item" data-section="profile">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="nav-item" data-section="messages">
+          <i class="fas fa-envelope"></i>
+        </div>
+      </nav>
+
+      <!-- Feed Content -->
+      <div class="feed-container">
+        <div class="feed-content" id="main-view">
+          <!-- Contenido dinÃ¡mico aquÃ­ -->
+          <div class="loading">Cargando...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal de Notificaciones -->
+    <div id="notificationsModal" class="modal">
+      <div class="modal-content notifications-modal">
+        <div class="modal-header">
+          <h3>Notificaciones</h3>
+          <button class="close-modal" onclick="closeNotificationsModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="notificationsList" class="notifications-list">
+            <!-- Notificaciones se cargan aquÃ­ -->
+          </div>
+          <div id="notificationsLoading" class="loading" style="display: none">
+            Cargando...
+          </div>
+          <div
+            id="noNotifications"
+            class="no-notifications"
+            style="display: none"
+          >
+            <i class="fas fa-bell-slash"></i>
+            <p>No tienes notificaciones nuevas</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="markAllNotificationsAsRead()" class="btn-secondary">
+            Marcar todas como leÃ­das
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
