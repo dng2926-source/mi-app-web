@@ -28,6 +28,10 @@ if (!process.env.JWT_SECRET) {
 
 logger.info("✅ Variables de entorno cargadas correctamente");
 
+// Confiar en proxies (importante para Render)
+const app = express();
+app.set("trust proxy", 1);
+
 // DB
 const conectarDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
@@ -35,8 +39,6 @@ const publicationRoutes = require("./routes/publicationRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const storyRoutes = require("./routes/storyRoutes");
-
-const app = express();
 
 // Conectar a MongoDB antes de iniciar el servidor
 conectarDB().catch((error) => {
@@ -146,6 +148,14 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: "Demasiadas solicitudes, intenta más tarde",
+  keyGenerator: (req) => {
+    // En Render, usar X-Forwarded-For si está disponible
+    return req.get('X-Forwarded-For') || req.ip;
+  },
+  skip: (req) => {
+    // Saltar rate limit en desarrollo
+    return process.env.NODE_ENV === "development";
+  }
 });
 app.use(limiter);
 
