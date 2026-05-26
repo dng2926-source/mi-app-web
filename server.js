@@ -12,6 +12,22 @@ require("./utils/setupDirs");
 // Logger
 const logger = require("./utils/logger");
 
+// Cargar variables de entorno
+require("dotenv").config();
+
+// Verificar variables críticas
+if (!process.env.MONGO_URI) {
+  logger.error("❌ ERROR: MONGO_URI no está configurado");
+  process.exit(1);
+}
+
+if (!process.env.JWT_SECRET) {
+  logger.error("❌ ERROR: JWT_SECRET no está configurado");
+  process.exit(1);
+}
+
+logger.info("✅ Variables de entorno cargadas correctamente");
+
 // DB
 const conectarDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
@@ -19,10 +35,14 @@ const publicationRoutes = require("./routes/publicationRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const storyRoutes = require("./routes/storyRoutes");
-require("dotenv").config();
 
 const app = express();
-conectarDB();
+
+// Conectar a MongoDB antes de iniciar el servidor
+conectarDB().catch((error) => {
+  logger.error("❌ Error conectando a MongoDB:", error);
+  process.exit(1);
+});
 
 // Seguridad: Headers HTTP
 // En desarrollo: CSP más permisivo para trabajar con IPs locales
@@ -132,15 +152,14 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 4000;
-const HOST = process.env.NODE_ENV === "production" ? "localhost" : "0.0.0.0";
+// Escuchar en 0.0.0.0 para que funcione en Render/producción
+const HOST = "0.0.0.0";
 
 const server = app.listen(PORT, HOST, () => {
-  logger.info(`✅ Servidor Pro corriendo en http://localhost:${PORT}`);
-  if (HOST === "0.0.0.0") {
-    logger.info(
-      `🌐 Para otras laptops, usa tu IP local (ej: http://192.168.1.XX:${PORT})`,
-    );
-  }
+  logger.info(`✅ Servidor Pro corriendo en http://0.0.0.0:${PORT}`);
+  logger.info(
+    `🌐 Accesible desde: http://localhost:${PORT} (local) o desde internet`,
+  );
 });
 
 // Graceful shutdown
