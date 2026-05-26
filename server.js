@@ -40,8 +40,7 @@ const app = express();
 
 // Conectar a MongoDB antes de iniciar el servidor
 conectarDB().catch((error) => {
-  logger.error("❌ Error conectando a MongoDB:", error);
-  process.exit(1);
+  logger.warn("⚠️ MongoDB no disponible, pero continuando...", error.message);
 });
 
 // Seguridad: Headers HTTP
