@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: mi-app-web-backend
+    env: node
+    startCommand: npm start
+    buildCommand: npm install
