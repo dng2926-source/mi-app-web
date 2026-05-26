@@ -8,7 +8,7 @@ const API_URL = (() => {
     const currentHost = window.location.hostname;
     // Si estamos en Firebase Hosting (producción)
     if (currentHost.includes("web.app") || currentHost.includes("firebaseapp.com")) {
-      return "https://mi-app-web-prod.up.railway.app"; // Cambiar por tu URL de Railway
+      return "https://mi-app-web-backend.onrender.com";
     }
   }
   // Desarrollo local
