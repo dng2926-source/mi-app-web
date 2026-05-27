@@ -14,6 +14,20 @@ router.post("/refresh-token", refreshAccessToken);
 router.post("/logout-all", auth, userController.revokeFirebaseSessions);
 router.get("/me", auth, userController.getCurrentUser);
 
+// Debug endpoint
+router.get("/debug/firebase", (req, res) => {
+  const hasServiceAccount = !!process.env.FIREBASE_SERVICE_ACCOUNT;
+  const hasPath = !!process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+  const hasGoogleCreds = !!process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  
+  res.json({
+    hasServiceAccount,
+    hasPath,
+    hasGoogleCreds,
+    env: process.env.NODE_ENV
+  });
+});
+
 // Rutas de usuario (búsqueda, perfil, seguimiento)
 router.get("/search", auth, userController.searchUsers);
 router.get("/profile/:userId", auth, userController.getUserProfile);

@@ -33,8 +33,13 @@ const initFirebaseAdmin = () => {
 };
 
 const verifyIdToken = async (idToken) => {
-  initFirebaseAdmin();
-  return admin.auth().verifyIdToken(idToken);
+  try {
+    initFirebaseAdmin();
+    return await admin.auth().verifyIdToken(idToken);
+  } catch (error) {
+    console.error("Firebase verifyIdToken error:", error.message, error.code);
+    throw error;
+  }
 };
 
 const revokeRefreshTokens = async (firebaseUid) => {

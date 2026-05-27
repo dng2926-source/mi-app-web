@@ -116,7 +116,17 @@ exports.firebaseAuth = async (req, res) => {
       return res.status(400).json({ message: "Firebase ID token requerido" });
     }
 
-    const decoded = await verifyIdToken(idToken);
+    let decoded;
+    try {
+      decoded = await verifyIdToken(idToken);
+    } catch (tokenError) {
+      logger.error("Token verification failed:", tokenError.message);
+      return res.status(401).json({ 
+        message: "Token inválido o expirado",
+        code: tokenError.code 
+      });
+    }
+
     const firebaseUid = decoded.uid;
     if (!firebaseUid) {
       return res.status(400).json({ message: "Token Firebase inválido" });
@@ -149,8 +159,11 @@ exports.firebaseAuth = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("Firebase auth error:", error);
-    res.status(500).json({ message: "Error al autenticar con Firebase" });
+    logger.error("Firebase auth error:", error.message);
+    res.status(500).json({ 
+      message: "Error al autenticar con Firebase",
+      details: process.env.NODE_ENV === "development" ? error.message : undefined
+    });
   }
 };
 
