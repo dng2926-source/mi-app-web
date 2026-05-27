@@ -140,7 +140,9 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-// Rate limiting global para APIs, pero sin contar respuestas exitosas
+// Rate limiting global para APIs
+// Usar ipKeyGenerator helper para manejar correctamente IPv4 e IPv6
+const { ipKeyGenerator } = require("express-rate-limit");
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 1000,
@@ -148,12 +150,9 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: "Demasiadas solicitudes, intenta más tarde",
-  keyGenerator: (req) => {
-    // En Render, usar X-Forwarded-For si está disponible
-    return req.get('X-Forwarded-For') || req.ip;
-  },
+  keyGenerator: ipKeyGenerator,
   skip: (req) => {
-    // Saltar rate limit en desarrollo
+    // Saltar rate limit en desarrollo local
     return process.env.NODE_ENV === "development";
   }
 });
