@@ -4,7 +4,10 @@ const path = require("path");
 let initialized = false;
 
 const initFirebaseAdmin = () => {
-  if (initialized) return;
+  if (initialized) {
+    console.log("✅ Firebase Admin already initialized, skipping...");
+    return;
+  }
 
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
   const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
@@ -12,13 +15,15 @@ const initFirebaseAdmin = () => {
   try {
     if (serviceAccountJson) {
       console.log("📌 Initializing Firebase Admin with FIREBASE_SERVICE_ACCOUNT");
+      console.log("📊 Service account length:", serviceAccountJson.length, "chars");
       const serviceAccount = JSON.parse(serviceAccountJson);
+      console.log("📊 Parsed project_id:", serviceAccount.project_id);
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
       });
       console.log("✅ Firebase Admin initialized successfully with service account");
     } else if (serviceAccountPath) {
-      console.log("📌 Initializing Firebase Admin with service account path");
+      console.log("📌 Initializing Firebase Admin with service account path:", serviceAccountPath);
       const serviceAccount = require(path.resolve(serviceAccountPath));
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
@@ -38,6 +43,7 @@ const initFirebaseAdmin = () => {
     initialized = true;
   } catch (error) {
     console.error("❌ Error initializing Firebase Admin:", error.message);
+    console.error("   Stack:", error.stack);
     throw error;
   }
 };
